@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors')
+const apiListeners = require('./routes')
 
 const app = express();
 app.use(express.json());
@@ -12,7 +13,4 @@ app.listen(3000, () => {
     console.log("Server Listening on PORT: 3000");
 });
 
-app.get('/status',(request,response)=>{
-    console.log('request recieved');
-    response.json({ok : true , data : "Everything ok nigga"})
-})
+apiListeners(app);
