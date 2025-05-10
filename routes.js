@@ -3,7 +3,7 @@ const path = require('path');
 
 function listenToApi(app){
     app.get('/status',(request,response)=>{
-        response.json({ok : true , data : "Everything ok nigga"})
+        response.json({ok : true , data : "Everything ok"})
     })
     
     app.post('/info',(request,response)=>{
