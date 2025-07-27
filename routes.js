@@ -27,6 +27,19 @@ function listenToApi(app){
             response.status(500).json({ok : false , error : error})
         }
     })
+
+    app.post('/getTodo',async (request,response)=>{
+        const {limit, page } = request.body;
+        
+        try{
+            const TodoModel = mongoose.model('todo',toDoSchema,'todo_collection');
+            const todos = await TodoModel.find().skip(parseInt(limit*page)).limit(parseInt(limit));
+            response.json({ok : true , todo : todos })
+        }catch(error){
+            response.status(500).json({ok : false , error : error})
+        }
+    })
+
 }
 
 module.exports = listenToApi
