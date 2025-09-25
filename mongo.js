@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const toDoSchema = require('./models');
 
 function connectMongo(){
     return new Promise((resolve,reject)=>{
@@ -8,6 +9,6 @@ function connectMongo(){
         })
     })
 }
-
-module.exports = connectMongo
+const TodoModel = mongoose.model('todo',toDoSchema,'todo_collection');
+module.exports = {connectMongo,TodoModel}
 
