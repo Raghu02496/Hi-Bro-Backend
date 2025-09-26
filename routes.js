@@ -3,7 +3,7 @@ const router = express.Router();
 const mongo = require('./mongo')
 
 function listenToApi(){
-    router.get('/status',(request,response)=>{
+    router.post('/status',(request,response)=>{
         response.json({ok : true , data : "Everything ok"})
     })
 
@@ -13,7 +13,7 @@ function listenToApi(){
         try{
             const todo = new mongo.TodoModel({string : string ,done : done})
             todo.save();
-            response.json({ok : true , msg : 'todo added'})
+            response.status(201).json({ok : true , msg : 'todo added'})
         }catch(error){
             response.status(500).json({ok : false , error : error})
         }
