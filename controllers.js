@@ -4,12 +4,12 @@ function sendStatus(request, response) {
     response.json({ ok: true, data: "Everything ok" })
 }
 
-function addTodo(request, response) {
+async function addTodo(request, response) {
     const { done, string } = request.body;
 
     try {
         const todo = new mongo.TodoModel({ string: string, done: done })
-        todo.save();
+        await todo.save();
         response.status(201).json({ ok: true, msg: 'todo added' })
     } catch (error) {
         response.status(500).json({ ok: false, error: error })
