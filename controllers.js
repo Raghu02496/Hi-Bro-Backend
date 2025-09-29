@@ -21,7 +21,7 @@ async function getTodo(request, response) {
 
     try {
         const todos = await mongo.TodoModel.find().skip(parseInt(limit * page)).limit(parseInt(limit));
-        response.json({ ok: true, todo: todos })
+        response.json({ ok: true, data: todos })
     } catch (error) {
         response.status(500).json({ ok: false, error: error })
     }
