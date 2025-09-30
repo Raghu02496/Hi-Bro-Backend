@@ -6,6 +6,7 @@ function listenToApi(){
     router.post('/status',controllers.sendStatus)
     router.post('/addTodo',controllers.addTodo)
     router.post('/getTodo',controllers.getTodo)
+    router.post('/updateTodoById',controllers.updateTodoById)
 }
 
 module.exports = {listenToApi,router}
