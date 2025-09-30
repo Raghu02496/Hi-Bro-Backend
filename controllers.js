@@ -42,9 +42,21 @@ async function updateTodoById(request, response) {
     }
 }
 
+async function deleteTodoById(request, response) {
+    const { _id } = request.body;
+
+    try {
+        await mongo.TodoModel.findByIdAndDelete(_id)
+        response.json({ ok: true})
+    } catch (error) {
+        response.status(500).json({ ok: false, error: error })
+    }
+}
+
 module.exports = {
     sendStatus,
     addTodo,
     getTodo,
-    updateTodoById
+    updateTodoById,
+    deleteTodoById
 }
