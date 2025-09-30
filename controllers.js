@@ -27,8 +27,24 @@ async function getTodo(request, response) {
     }
 }
 
+async function updateTodoById(request, response) {
+    const { _id, string , done } = request.body;
+
+    try {
+        const todo = await mongo.TodoModel.findByIdAndUpdate(
+            _id,
+            {$set : {string : string , done : done}},
+            {returnDocument : 'after'}
+        )
+        response.json({ ok: true, data: todo })
+    } catch (error) {
+        response.status(500).json({ ok: false, error: error })
+    }
+}
+
 module.exports = {
     sendStatus,
     addTodo,
-    getTodo
+    getTodo,
+    updateTodoById
 }
