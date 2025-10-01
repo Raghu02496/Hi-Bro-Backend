@@ -10,7 +10,7 @@ async function addTodo(request, response) {
     try {
         const todo = new mongo.TodoModel({ string: string, done: done })
         await todo.save();
-        response.status(201).json({ ok: true, msg: 'todo added' })
+        response.status(201).json({ ok: true, data: todo })
     } catch (error) {
         response.status(500).json({ ok: false, error: error })
     }
