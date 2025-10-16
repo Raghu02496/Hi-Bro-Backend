@@ -8,6 +8,7 @@ function listenToApi(){
     router.post('/getTodo',controllers.getTodo)
     router.post('/updateTodoById',controllers.updateTodoById)
     router.post('/deleteTodoById',controllers.deleteTodoById)
+    router.post('/msgChatGpt',controllers.msgChatGpt)
 }
 
 module.exports = {listenToApi,router}
