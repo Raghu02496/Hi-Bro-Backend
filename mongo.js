@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const toDoSchema = require('./models');
+import { mongoose } from "mongoose"
+import { toDoSchema } from "./models.js"
 
-function connectMongo(){
+export function connectMongo(){
     return new Promise((resolve,reject)=>{
         mongoose.connect('mongodb://localhost:27017/todo').then(()=>{
             resolve()
@@ -9,6 +9,5 @@ function connectMongo(){
         })
     })
 }
-const TodoModel = mongoose.model('todo',toDoSchema,'todo_collection');
-module.exports = {connectMongo,TodoModel}
+export const TodoModel = mongoose.model('todo',toDoSchema,'todo_collection');
 

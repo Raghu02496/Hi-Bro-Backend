@@ -1,15 +1,15 @@
-const mongo = require('./mongo')
-const openAI = require('openai')
+import { TodoModel } from "./mongo.js"
+import { OpenAI } from "openai"
 
-function sendStatus(request, response) {
+export function sendStatus(request, response) {
     response.json({ ok: true, data: "Everything ok" })
 }
 
-async function addTodo(request, response) {
+export async function addTodo(request, response) {
     const { done, string } = request.body;
 
     try {
-        const todo = new mongo.TodoModel({ string: string, done: done })
+        const todo = new TodoModel({ string: string, done: done })
         await todo.save();
         response.status(201).json({ ok: true, data: todo })
     } catch (error) {
@@ -17,22 +17,22 @@ async function addTodo(request, response) {
     }
 }
 
-async function getTodo(request, response) {
+export async function getTodo(request, response) {
     const { limit, page } = request.body;
 
     try {
-        const todos = await mongo.TodoModel.find().skip(parseInt(limit * (page - 1))).limit(parseInt(limit));
+        const todos = await TodoModel.find().skip(parseInt(limit * (page - 1))).limit(parseInt(limit));
         response.json({ ok: true, data: todos })
     } catch (error) {
         response.status(500).json({ ok: false, error: error })
     }
 }
 
-async function updateTodoById(request, response) {
+export async function updateTodoById(request, response) {
     const { _id, string, done } = request.body;
 
     try {
-        const todo = await mongo.TodoModel.findByIdAndUpdate(
+        const todo = await TodoModel.findByIdAndUpdate(
             _id,
             { $set: { string: string, done: done } },
             { returnDocument: 'after' }
@@ -43,19 +43,19 @@ async function updateTodoById(request, response) {
     }
 }
 
-async function deleteTodoById(request, response) {
+export async function deleteTodoById(request, response) {
     const { _id } = request.body;
 
     try {
-        await mongo.TodoModel.findByIdAndDelete(_id)
+        await TodoModel.findByIdAndDelete(_id)
         response.json({ ok: true })
     } catch (error) {
         response.status(500).json({ ok: false, error: error })
     }
 }
 
-async function msgChatGpt(request, response) {
-    const openai = new openAI({
+export async function msgChatGpt(request, response) {
+    const openai = new OpenAI({
         apiKey: process.env.DetectiveKey,
     });
 
@@ -74,13 +74,4 @@ async function msgChatGpt(request, response) {
     } catch (error) {
         response.status(500).json({ ok: false, error: error })
     }
-}
-
-module.exports = {
-    sendStatus,
-    addTodo,
-    getTodo,
-    updateTodoById,
-    deleteTodoById,
-    msgChatGpt
 }

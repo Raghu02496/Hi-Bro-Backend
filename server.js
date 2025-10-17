@@ -1,8 +1,8 @@
-const express = require('express');
-const cors = require('cors')
-const mongo = require('./mongo')
-const routes = require('./routes')
-const dotenv = require('dotenv')
+import express from "express"
+import cors from "cors"
+import { connectMongo } from "./mongo.js"
+import { router,listenToApi } from "./routes.js"
+import dotenv  from "dotenv"
 
 const app = express();
 app.use(express.json());
@@ -13,10 +13,10 @@ app.use(cors({
 
 dotenv.config();
 
-mongo.connectMongo().then(()=>{
-    app.listen(process.env.PORT, () => {
-        console.log(`Server Listening on PORT: ${process.env.PORT}`);
-    });
-    app.use('/todo',routes.router)
-    routes.listenToApi();
+await connectMongo()
+
+app.listen(process.env.PORT, () => {
+    console.log(`Server Listening on PORT: ${process.env.PORT}`);
 });
+app.use('/todo',router)
+listenToApi();

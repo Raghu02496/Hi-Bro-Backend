@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
+import { mongoose } from "mongoose"
 
-const toDoSchema = new mongoose.Schema({
+export const toDoSchema = new mongoose.Schema({
     done : Boolean,
     string : String
 })
-
-module.exports = toDoSchema

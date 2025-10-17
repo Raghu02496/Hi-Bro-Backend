@@ -1,14 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const controllers = require('./controllers')
+import express from "express"
+import { sendStatus,addTodo,getTodo,updateTodoById,deleteTodoById,msgChatGpt } from "./controllers.js"
 
-function listenToApi(){
-    router.post('/status',controllers.sendStatus)
-    router.post('/addTodo',controllers.addTodo)
-    router.post('/getTodo',controllers.getTodo)
-    router.post('/updateTodoById',controllers.updateTodoById)
-    router.post('/deleteTodoById',controllers.deleteTodoById)
-    router.post('/msgChatGpt',controllers.msgChatGpt)
+export const router = express.Router();
+
+export function listenToApi(){
+    router.post('/status',sendStatus)
+    router.post('/addTodo',addTodo)
+    router.post('/getTodo',getTodo)
+    router.post('/updateTodoById',updateTodoById)
+    router.post('/deleteTodoById',deleteTodoById)
+    router.post('/msgChatGpt',msgChatGpt)
 }
-
-module.exports = {listenToApi,router}
