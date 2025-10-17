@@ -1,6 +1,6 @@
 import { mongoose } from "mongoose"
 
-export const toDoSchema = new mongoose.Schema({
-    done : Boolean,
-    string : String
+export const conversationSchema = new mongoose.Schema({
+    role : String,
+    content : String
 })
