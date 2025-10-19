@@ -1,13 +1,14 @@
 import { mongoose } from "mongoose"
-import { conversationSchema } from "./models.js"
+import { caseSchema, messageSchema } from "./models.js"
 
 export function connectMongo(){
     return new Promise((resolve,reject)=>{
-        mongoose.connect('mongodb://localhost:27017/cases').then(()=>{
+        mongoose.connect('mongodb://localhost:27017/detective').then(()=>{
             resolve()
             console.log('connected to mongodb');
         })
     })
 }
-export const conversationModel = mongoose.model('conversation',conversationSchema,'crimes');
+export const caseModel = mongoose.model('cases',caseSchema,'cases');
+export const messageModel = mongoose.model('messages',messageSchema, 'messages')
 
