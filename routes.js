@@ -5,5 +5,5 @@ export const router = express.Router();
 
 export function listenToApi(){
     router.post('/msgChatGpt',msgChatGpt)
-    router.get('/getConversation',getConversation)
+    router.post('/getConversation',getConversation)
 }
