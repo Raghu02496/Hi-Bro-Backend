@@ -1,5 +1,5 @@
 import { OpenAI } from "openai"
-import { conversationModel } from "./mongo.js";
+import { messageModel } from "./mongo.js";
 
 export function sendStatus(request, response) {
     response.json({ ok: true, data: "Everything ok" })
@@ -11,9 +11,9 @@ export async function msgChatGpt(request, response) {
     });
 
     try {
-        const { content } = request.body
+        const { content, case_id } = request.body
 
-        let previousConversations = await conversationModel.find({},{role : 1 , content : 1 , _id : 0})
+        let previousConversations = await messageModel.find({case_id : case_id })
 
         previousConversations.push({ role: "user", content: content })
 
@@ -25,9 +25,10 @@ export async function msgChatGpt(request, response) {
         });
         
         const reply = completion.choices[0].message.content;
-        await conversationModel.insertMany([
-            {role:'user' , content : content},
-            {role:'assistant' , content : reply}
+
+        await messageModel.insertMany([
+            {case_id : case_id, role:'user', content : content},
+            {case_id: case_id, role:'assistant', content : reply}
         ])
         response.json({ ok: true, data: reply });
     } catch (error) {
@@ -36,7 +37,8 @@ export async function msgChatGpt(request, response) {
 }
 
 export async function getConversation(request, response){
-    let previousConversations = await conversationModel.find({},{role : 1 , content : 1 , _id : 0})
+    let { case_id } = request.body
+    let previousConversations = await messageModel.find({case_id : case_id},{__v : 0})
 
     try{
         response.json({ok : true , data : previousConversations})
