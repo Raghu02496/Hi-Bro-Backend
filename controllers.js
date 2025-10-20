@@ -88,3 +88,41 @@ async function generateSummary(previousConversations,curCase,openai){
 
     return newSummary
 }
+
+export async function generateCase(request, response) {
+    const openai = new OpenAI({
+        apiKey: process.env.DetectiveKey,
+    });
+
+    try{
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a game AI that creates detective cases in JSON format only."
+                },
+                {
+                    role: 'user',
+                    content: `Generate a case for my AI detective game. 
+                                Follow this JSON structure exactly:
+                                {
+                                    crime_title: "",
+                                    suspects: [
+                                        { name: "", role: "", guilty: "" }
+                                    ],
+                                    cluePool: [""],
+                                    lastSummaryCount: 0 //default 0,
+                                    summary: "" //default empty
+                                }`
+                }
+            ]
+        });
+    
+        const reply = JSON.parse(completion.choices[0].message.content);
+        const insertedDoc = await caseModel.insertOne(reply);
+        response.json({ok : true , data : {_id : insertedDoc._id , ...reply}})
+    }catch(error){
+        console.log(error,'error')
+    }
+}
