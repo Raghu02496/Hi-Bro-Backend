@@ -16,7 +16,12 @@ export async function msgChatGpt(request, response) {
         let curCase = await caseModel.findOne({_id : case_id})
 
         // fetch the recent 10 messages
-        let previousConversations = await messageModel.find({case_id : case_id }).skip(curCase.lastSummaryCount).limit(10)
+        let previousConversations = await messageModel.find(
+            {case_id : case_id },
+            {role : 1,content : 1,_id:0}
+        )
+        .skip(curCase.lastSummaryCount)
+        .limit(10)
 
         //count the total number of messages
         let totalCount = await messageModel.countDocuments({case_id : case_id })
@@ -31,7 +36,7 @@ export async function msgChatGpt(request, response) {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
-                {role : 'system', content : `previous coversations summary ${curCase.summary}`},
+                {role : 'system', content : `previous coversations summary: \n${curCase.summary}`},
                 ...previousConversations
             ]
         });
@@ -44,6 +49,7 @@ export async function msgChatGpt(request, response) {
         ])
         response.json({ ok: true, data: reply });
     } catch (error) {
+        console.log(error,'error')
         response.status(500).json({ ok: false, error: error })
     }
 }
@@ -55,6 +61,7 @@ export async function getConversation(request, response){
     try{
         response.json({ok : true , data : previousConversations})
     }catch(error){
+        console.log(error,'error')
         response.status(500).json({ ok: false, error: error })
     }
 }
