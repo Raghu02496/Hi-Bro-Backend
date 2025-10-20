@@ -1,7 +1,9 @@
 import { mongoose } from "mongoose"
 
 export const caseSchema = new mongoose.Schema({
-    _id : String,
+    crime_title : String,
+    suspects : Array,
+    cluePool : Array,
     lastSummaryCount : Number,
     summary : String
 })
