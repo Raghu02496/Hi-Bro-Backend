@@ -66,8 +66,9 @@ async function generateSummary(previousConversations,curCase,openai){
         messages: [
             {
                 role : 'system',
-                content : `Summarize and compress this conversation as much possible without losing key details
-                ${JSON.stringify(previousConversations)}`
+                content : `Summarize and compress this conversation as much possible without losing key details.
+                previous summary : ${curCase.summary},
+                new messages : ${JSON.stringify(previousConversations)}`
             }
         ]
     });
