@@ -94,11 +94,12 @@ async function generateSummary(recentConversations,interrogation,openai){
         messages: [
             {
                 role : 'system',
-                content : 'You have to summarize the provided interrogation conversation and compress as much possible without losing key details.'
+                content : 'You have to summarize the interrogation conversation and compress as much possible without losing key details.'
             },
             {
                 role : 'user',
-                content : `${JSON.stringify(recentConversations)}`
+                content : `previous conversations summary for context : ${interrogation.summary}\n
+                interrogation conversation : ${JSON.stringify(recentConversations)}`
             }
         ]
     });
