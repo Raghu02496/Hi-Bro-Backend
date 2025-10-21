@@ -38,7 +38,7 @@ export async function msgChatGpt(request, response) {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
-                {role : 'system' ,content : 'You are playing the role of suspect for my AI detective game, user is the detective and you will play the susupect'},
+                {role : 'system' ,content : 'You are playing the role of suspect for my AI detective game, user is the detective and you will play the susupect, if user a message is outside the context of game reply im not aware of that'},
                 {
                     role: 'user',
                     content: `
