@@ -1,5 +1,5 @@
 import { mongoose } from "mongoose"
-import { caseSchema, messageSchema } from "./models.js"
+import { caseSchema, messageSchema, interrogationSchema } from "./models.js"
 
 export function connectMongo(){
     return new Promise((resolve,reject)=>{
@@ -9,6 +9,8 @@ export function connectMongo(){
         })
     })
 }
+
 export const caseModel = mongoose.model('cases',caseSchema,'cases');
 export const messageModel = mongoose.model('messages',messageSchema, 'messages')
+export const interrogationModel = mongoose.model('interrogations',interrogationSchema, 'interrogations')
 
