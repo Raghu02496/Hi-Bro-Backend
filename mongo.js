@@ -1,5 +1,5 @@
 import { mongoose } from "mongoose"
-import { caseSchema, messageSchema, interrogationSchema } from "./models.js"
+import { caseSchema, messageSchema, interrogationSchema } from "./schema.js"
 
 export function connectMongo(){
     return new Promise((resolve,reject)=>{
