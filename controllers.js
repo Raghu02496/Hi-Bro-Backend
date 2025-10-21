@@ -107,9 +107,10 @@ export async function generateCase(request, response) {
                     content: `Generate a case for my AI detective game. 
                                 Follow this JSON structure exactly:
                                 {
-                                    crime_title: "",
+                                    title: "",
+                                    description: "",
                                     suspects: [
-                                        { name: "", role: "", guilty: "" }
+                                        { name: "", role: "", guilty: boolean }
                                     ],
                                     cluePool: [""],
                                     lastSummaryCount: 0 //default 0,
@@ -124,5 +125,6 @@ export async function generateCase(request, response) {
         response.json({ok : true , data : {_id : insertedDoc._id , ...reply}})
     }catch(error){
         console.log(error,'error')
+        response.status(500).json({ ok: false, error: error })
     }
 }
