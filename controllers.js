@@ -12,13 +12,13 @@ export async function msgChatGpt(request, response) {
     });
 
     try {
-        const { content,case_id,suspect } = request.body
+        const { content, case_id, suspect } = request.body
 
         const curCase = await caseModel.findOne({_id : case_id})
         const interrogation = await interrogationModel.findOne({suspectId : suspect._id})
 
         // fetch the recent 10 messages
-        let previousConversations = await messageModel.find(
+        let recentConversations = await messageModel.find(
             {suspectId : suspect._id },
             {role : 1,content : 1,_id:0}
         )
@@ -29,25 +29,37 @@ export async function msgChatGpt(request, response) {
         let totalCount = await messageModel.countDocuments({suspectId : suspect._id })
 
         if(totalCount - interrogation.lastSummaryCount >= 10 ){
-            interrogation.summary = await generateSummary(previousConversations,interrogation,openai)
-            previousConversations = []
+            interrogation.summary = await generateSummary(recentConversations,interrogation,openai)
+            recentConversations = []
         }
 
-        previousConversations.push({ role: "user", content: content })
+        recentConversations.push({ role: "user", content: content })
         
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
                 {role : 'system' ,content : 'You are playing the role of suspect for my AI detective game, user is the detective and you will play the susupect'},
                 {
-                    role : 'user',
-                    content : `suspect name : ${suspect.name}\n
-                    suspect role : ${suspect.role}\n
-                    case description : ${curCase.description}\n
-                    suspects : ${curCase.suspects}\n
-                    previous coversations summary for context: \n${interrogation.summary}`
-                },
-                ...previousConversations
+                    role: 'user',
+                    content: `
+                        You are interrogating a suspect in an ongoing case.
+                  
+                        **Suspect Details:**
+                        - Name: ${suspect.name}
+                        - Role: ${suspect.role}
+                        
+                        **Case Description:**
+                        ${curCase.description}
+                        
+                        **Other Suspects:**
+                        ${curCase.suspects.map(s => `- ${s.name} (${s.role})`).join('\n')}
+                        
+                        **Previous Conversation Summary (for context):**
+                        ${interrogation.summary}
+                        
+                        Now continue the interrogation with this suspect based on the case context.`
+                  },
+                ...recentConversations
             ]
         });
         
@@ -66,37 +78,38 @@ export async function msgChatGpt(request, response) {
 
 export async function getConversation(request, response){
     let { suspect_id } = request.body
-    let previousConversations = await messageModel.find({suspectId : suspect_id},{__v : 0})
+    let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0})
 
     try{
-        response.json({ok : true , data : previousConversations})
+        response.json({ok : true , data : conversations})
     }catch(error){
         console.log(error,'error')
         response.status(500).json({ ok: false, error: error })
     }
 }
 
-async function generateSummary(previousConversations,interrogation,openai){
+async function generateSummary(recentConversations,interrogation,openai){
     const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
             {
                 role : 'system',
-                content : 'You have to summarize and combine both previous and new conversation as much efficiently without losing key details(output should be just summary nothing else).'
+                content : 'You have to summarize the provided interrogation conversation and compress as much possible without losing key details.'
             },
             {
                 role : 'user',
-                content : ` previous coversation summary : ${interrogation.summary},\n
-                new conversation : ${JSON.stringify(previousConversations)}`
+                content : `${JSON.stringify(recentConversations)}`
             }
         ]
     });
 
     const reply = completion.choices[0].message.content;
 
-    await interrogationModel.updateOne({_id : interrogation._id},{$set : {summary : reply},$inc : {lastSummaryCount : 10}})
+    const newSummary = interrogation.summary ? (interrogation.summary+'\n'+reply) : reply
 
-    return reply
+    await interrogationModel.updateOne({_id : interrogation._id},{$set : {summary : newSummary},$inc : {lastSummaryCount : 10}})
+
+    return newSummary
 }
 
 export async function generateCase(request, response) {
@@ -114,16 +127,15 @@ export async function generateCase(request, response) {
                 },
                 {
                     role: 'user',
-                    content: `Generate a case for my AI detective game. 
-                                Follow this JSON structure exactly:
-                                {
-                                    title: "",
-                                    description: "",
-                                    suspects: [
-                                        { name: "", role: "", guilty: boolean }
-                                    ],
-                                    cluePool: [""]
-                                }`
+                    content: `Generate a case for my AI detective game. Follow this JSON structure exactly:
+                            {
+                                title: "",
+                                description: "",
+                                suspects: [
+                                    { name: "", role: "", guilty: boolean }
+                                ],
+                                cluePool: [""]
+                            }`
                 }
             ]
         });
