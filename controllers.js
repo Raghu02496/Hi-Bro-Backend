@@ -170,8 +170,9 @@ export async function generateCase(request, response) {
 export async function getCaseById(request,response) {
     try{
         const {case_id} = request.body
-        const result = await caseModel.findById({_id : case_id},{"suspects.guilty" : 0})
-        response.json({ok : true , data : result})
+        // const result = await caseModel.findById({_id : case_id},{"suspects.guilty" : 0})
+        const result = await caseModel.find({},{"suspects.guilty" : 0})
+        response.json({ok : true , data : result[0]})
     }catch(error){
         console.log(error,'error')
         response.status(500).json({ ok: false, error: error })
