@@ -7,11 +7,12 @@ import dotenv  from "dotenv"
 const app = express();
 app.use(express.json());
 
+dotenv.config();
+
 app.use(cors({
     origin: process.env.ORIGIN
 }));
 
-dotenv.config();
 
 await connectMongo()
 
