@@ -38,7 +38,15 @@ export async function msgChatGpt(request, response) {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
-                {role : 'system' ,content : 'You are playing the role of suspect for my AI detective game, user is the detective and you will play the susupect, if user a message is outside the context of game reply im not aware of that'},
+                {
+                    role : 'system',
+                    content : `You are an AI roleplaying as a suspect in a detective game. 
+                                The user is the detective interrogating you. 
+                                Stay fully in character — answer as the suspect would, using the case details provided. 
+                                You can respond naturally to greetings or casual detective talk, 
+                                but if the user asks about anything unrelated to the game or the case, 
+                                respond with: "I'm not aware of that, detective.`
+                },
                 {
                     role: 'user',
                     content: `
