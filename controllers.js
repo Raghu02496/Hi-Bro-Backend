@@ -1,5 +1,5 @@
 import { OpenAI } from "openai"
-import { messageModel, caseModel, interrogationModel } from "./mongo.js";
+import { messageModel, caseModel, interrogationModel } from "./models.js";
 import mongoose from "mongoose";
 
 export function sendStatus(request, response) {
@@ -8,7 +8,7 @@ export function sendStatus(request, response) {
 
 export async function msgChatGpt(request, response) {
     const openai = new OpenAI({
-        apiKey: process.env.DetectiveKey,
+        apiKey: process.env.DETECTIVE_KEY,
     });
 
     try {
@@ -115,7 +115,7 @@ async function generateSummary(recentConversations,interrogation,openai){
 
 export async function generateCase(request, response) {
     const openai = new OpenAI({
-        apiKey: process.env.DetectiveKey,
+        apiKey: process.env.DETECTIVE_KEY,
     });
 
     try{
