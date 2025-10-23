@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
-import { caseSchema, messageSchema, interrogationSchema } from "./schema.js"
+import { caseSchema, messageSchema, interrogationSchema, userSchema } from "./schema.js"
 
-export const caseModel = mongoose.model('cases',caseSchema,'cases');
-export const messageModel = mongoose.model('messages',messageSchema, 'messages')
-export const interrogationModel = mongoose.model('interrogations',interrogationSchema, 'interrogations')
+export const caseModel = mongoose.model('Cases',caseSchema);
+export const messageModel = mongoose.model('Messages',messageSchema)
+export const interrogationModel = mongoose.model('Interrogations',interrogationSchema)
+export const userModel = mongoose.model('Users',userSchema)
