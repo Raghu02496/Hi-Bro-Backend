@@ -21,3 +21,8 @@ export const interrogationSchema = new mongoose.Schema({
     lastSummaryCount : Number,
     summary : String
 })
+
+export const userSchema = new mongoose.Schema({
+    userName : {type : String, required : true, unique : true},
+    password : {type : String, required : true}
+})
