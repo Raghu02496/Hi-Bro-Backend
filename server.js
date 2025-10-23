@@ -1,8 +1,10 @@
 import express from "express"
 import cors from "cors"
+import dotenv from "dotenv"
+import gameRouter from "./routes/game.routes.js"
+import authRouter from "./routes/auth.routes.js"
 import { connectMongo } from "./mongo.js"
-import { router,listenToApi } from "./routes.js"
-import dotenv  from "dotenv"
+import { authMiddleware } from "./middleware.js"
 
 const app = express();
 app.use(express.json());
@@ -19,5 +21,6 @@ await connectMongo()
 app.listen(process.env.PORT, () => {
     console.log(`Server Listening on PORT: ${process.env.PORT}`);
 });
-app.use('/x',router)
-listenToApi();
+
+app.use('/protected',authMiddleware,gameRouter);
+app.use('/public',authRouter)
