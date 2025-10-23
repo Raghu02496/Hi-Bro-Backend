@@ -3,10 +3,10 @@ import { msgChatGpt, getConversation, generateCase, getCaseById, sendStatus } fr
 
 export const gameRouter = express.Router();
 
-router.post('/status',sendStatus)
-router.post('/msgChatGpt',msgChatGpt)
-router.post('/getConversation',getConversation)
-router.post('/generateCase',generateCase)
-router.post('/getCaseById',getCaseById)
+gameRouter.post('/status',sendStatus)
+gameRouter.post('/msgChatGpt',msgChatGpt)
+gameRouter.post('/getConversation',getConversation)
+gameRouter.post('/generateCase',generateCase)
+gameRouter.post('/getCaseById',getCaseById)
 
 export default gameRouter
