@@ -3,7 +3,7 @@ import { messageModel, caseModel, interrogationModel } from "./models.js";
 import mongoose from "mongoose";
 
 export function sendStatus(request, response) {
-    response.json({ ok: true, data: "Everything ok" })
+    return response.json({ ok: true, data: "Everything ok" })
 }
 
 export async function msgChatGpt(request, response) {
@@ -77,10 +77,10 @@ export async function msgChatGpt(request, response) {
             {case_id : case_id, role:'user', content : content,suspectId:suspect._id,interrogationId:interrogation._id},
             {case_id: case_id, role:'assistant', content : reply,suspectId:suspect._id,interrogationId:interrogation._id}
         ])
-        response.json({ ok: true, data: reply });
+        return response.json({ ok: true, data: reply });
     } catch (error) {
         console.log(error,'error')
-        response.status(500).json({ ok: false, error: error })
+        return response.status(500).json({ ok: false, error: error })
     }
 }
 
@@ -89,10 +89,10 @@ export async function getConversation(request, response){
     let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0})
 
     try{
-        response.json({ok : true , data : conversations})
+        return response.json({ok : true , data : conversations})
     }catch(error){
         console.log(error,'error')
-        response.status(500).json({ ok: false, error: error })
+        return response.status(500).json({ ok: false, error: error })
     }
 }
 
@@ -160,10 +160,10 @@ export async function generateCase(request, response) {
         for(let suspect of insertedDoc.suspects){
             await interrogationModel.insertOne({caseId : insertedDoc._id,suspectId : suspect._id, lastSummaryCount : 0, summary : ""})
         }
-        response.json({ok : true , data : {_id : insertedDoc._id , ...reply}})
+        return response.json({ok : true , data : {_id : insertedDoc._id , ...reply}})
     }catch(error){
         console.log(error,'error')
-        response.status(500).json({ ok: false, error: error })
+        return response.status(500).json({ ok: false, error: error })
     }
 }
 
@@ -172,9 +172,9 @@ export async function getCaseById(request,response) {
         const {case_id} = request.body
         const result = await caseModel.findById({_id : case_id},{"suspects.guilty" : 0})
 
-        response.json({ok : true , data : result})
+        return response.json({ok : true , data : result})
     }catch(error){
         console.log(error,'error')
-        response.status(500).json({ ok: false, error: error })
+        return response.status(500).json({ ok: false, error: error })
     }
 }
