@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { caseSchema, messageSchema, interrogationSchema, userSchema } from "./schema.js"
+import { caseSchema, messageSchema, interrogationSchema, userSchema } from "../schemas/schema.js"
 
 export const caseModel = mongoose.model('Cases',caseSchema);
 export const messageModel = mongoose.model('Messages',messageSchema)

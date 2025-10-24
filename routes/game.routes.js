@@ -1,5 +1,5 @@
 import express from "express"
-import { msgChatGpt, getConversation, generateCase, getCaseById, sendStatus } from "../controllers.js"
+import { msgChatGpt, getConversation, generateCase, getCaseById, sendStatus } from "../controllers/game.controllers.js"
 
 export const gameRouter = express.Router();
 
