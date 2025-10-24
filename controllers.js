@@ -214,3 +214,13 @@ export async function login(request, response){
         return response.status(500).json({ ok: false, error: error })
     }
 }
+
+export async function logout(request, response) {
+    try{
+        response.clearCookie("token");
+        return response.json({ ok: true, message: "Logged out successfully" });
+    }catch(error){
+        console.log(error,'error')
+        return response.status(500).json({ ok: false, error: error })
+    }
+}
