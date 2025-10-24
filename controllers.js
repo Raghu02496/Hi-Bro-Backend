@@ -204,7 +204,8 @@ export async function login(request, response){
             httpOnly: true,
             secure: process.env.PROD,
             sameSite: 'None',
-            maxAge : 3600000
+            maxAge : 3600000,
+            domain: process.env.DOMAIN
         })
 
         return response.json({ok : true, data : 'Sign in successful'})
