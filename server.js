@@ -5,15 +5,20 @@ import gameRouter from "./routes/game.routes.js"
 import authRouter from "./routes/auth.routes.js"
 import { connectMongo } from "./mongo.js"
 import { authMiddleware } from "./middleware.js"
-
-const app = express();
-app.use(express.json());
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-app.use(cors({
-    origin: process.env.ORIGIN
-}));
+const app = express();
+
+app.use(
+    express.json(),
+    cookieParser(),
+    cors({
+        origin: process.env.ORIGIN,
+        credentials: true
+    })
+);
 
 
 await connectMongo()

@@ -199,8 +199,15 @@ export async function login(request, response){
         }
     
         const token = jwt.sign({id : user._id}, process.env.JWT_SECRET, {expiresIn : '1h'})
-    
-        return response.json({ok : true, data : token})
+        
+        response.cookie("token",token,{
+            httpOnly: true,
+            secure: process.env.PROD,
+            sameSite: 'None',
+            maxAge : 3600000
+        })
+
+        return response.json({ok : true, data : 'Sign in successful'})
     }catch(error){
         console.log(error,'error')
         return response.status(500).json({ ok: false, error: error })
