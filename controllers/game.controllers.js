@@ -85,8 +85,8 @@ export async function msgChatGpt(request, response) {
 }
 
 export async function getConversation(request, response){
-    let { suspect_id } = request.body
-    let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0})
+    let { suspect_id, page_no } = request.body
+    let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0}).sort({_id : 1}).skip((page_no-1) * 10).limit(10);
 
     try{
         return response.json({ok : true , data : conversations})
