@@ -217,7 +217,13 @@ export async function login(request, response){
 
 export async function logout(request, response) {
     try{
-        response.clearCookie("token");
+        response.clearCookie("token",{
+            httpOnly: true,
+            secure: process.env.PROD,
+            sameSite: 'None',
+            maxAge : 3600000,
+            path : '/'
+        });
         return response.json({ ok: true, message: "Logged out successfully" });
     }catch(error){
         console.log(error,'error')
