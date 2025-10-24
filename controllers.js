@@ -205,7 +205,7 @@ export async function login(request, response){
             secure: process.env.PROD,
             sameSite: 'None',
             maxAge : 3600000,
-            domain: process.env.DOMAIN
+            path : '/'
         })
 
         return response.json({ok : true, data : 'Sign in successful'})
