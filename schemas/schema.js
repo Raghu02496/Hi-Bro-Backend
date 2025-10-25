@@ -8,7 +8,8 @@ export const caseSchema = new mongoose.Schema({
 })
 
 export const messageSchema = new mongoose.Schema({
-    case_id : mongoose.Schema.Types.ObjectId,
+    userId : mongoose.Schema.Types.ObjectId,
+    caseId : mongoose.Schema.Types.ObjectId,
     suspectId : mongoose.Schema.Types.ObjectId,
     interrogationId : mongoose.Schema.Types.ObjectId,
     role : String,
@@ -16,6 +17,7 @@ export const messageSchema = new mongoose.Schema({
 })
 
 export const interrogationSchema = new mongoose.Schema({
+    userId : mongoose.Schema.Types.ObjectId,
     suspectId : mongoose.Schema.Types.ObjectId,
     caseId : mongoose.Schema.Types.ObjectId,
     lastSummaryCount : Number,

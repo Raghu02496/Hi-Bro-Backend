@@ -14,18 +14,22 @@ export async function msgChatGpt(request, response) {
         const { content, case_id, suspect } = request.body
 
         const curCase = await caseModel.findOne({_id : case_id})
-        const interrogation = await interrogationModel.findOne({suspectId : suspect._id})
+        let interrogation = await interrogationModel.findOne({userId : request.userId, suspectId : suspect._id})
+
+        if(!interrogation){
+            interrogation = await interrogationModel.insertOne({caseId : case_id, userId : request.userId, suspectId : suspect._id, lastSummaryCount : 0, summary : ""})
+        }
 
         // fetch the recent 10 messages
         let recentConversations = await messageModel.find(
-            {suspectId : suspect._id },
+            {userId : request.userId, suspectId : suspect._id },
             {role : 1,content : 1,_id:0}
         )
         .skip(interrogation.lastSummaryCount)
         .limit(10)
 
         //count the total number of messages
-        let totalCount = await messageModel.countDocuments({suspectId : suspect._id })
+        let totalCount = await messageModel.countDocuments({userId : request.userId, suspectId : suspect._id })
 
         if(totalCount - interrogation.lastSummaryCount >= 10 ){
             interrogation.summary = await generateSummary(recentConversations,interrogation,openai)
@@ -73,8 +77,8 @@ export async function msgChatGpt(request, response) {
         const reply = completion.choices[0].message.content;
 
         await messageModel.insertMany([
-            {case_id : case_id, role:'user', content : content,suspectId:suspect._id,interrogationId:interrogation._id},
-            {case_id: case_id, role:'assistant', content : reply,suspectId:suspect._id,interrogationId:interrogation._id}
+            {caseId : case_id, role:'user', content : content, userId : request.userId, suspectId : suspect._id, interrogationId : interrogation._id},
+            {caseId: case_id, role:'assistant', content : reply, userId : request.userId, suspectId : suspect._id, interrogationId : interrogation._id}
         ])
         return response.json({ ok: true, data: reply });
     } catch (error) {
@@ -86,7 +90,7 @@ export async function msgChatGpt(request, response) {
 export async function getConversation(request, response){
     try{
         let { suspect_id, page_no } = request.body
-        let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0});
+        let conversations = await messageModel.find({userId : request.userId, suspectId : suspect_id},{__v : 0});
         return response.json({ok : true , data : conversations})
     }catch(error){
         console.log(error,'error')
@@ -160,9 +164,6 @@ export async function generateCase(request, response) {
 
         const insertedDoc = await caseModel.insertOne(reply);
 
-        for(let suspect of insertedDoc.suspects){
-            await interrogationModel.insertOne({caseId : insertedDoc._id,suspectId : suspect._id, lastSummaryCount : 0, summary : ""})
-        }
         return response.json({ok : true , data : {_id : insertedDoc._id , ...reply}})
     }catch(error){
         console.log(error,'error')
