@@ -20,7 +20,6 @@ app.use(
     })
 );
 
-
 await connectMongo()
 
 app.listen(process.env.PORT, () => {
