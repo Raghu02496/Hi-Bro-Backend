@@ -7,11 +7,10 @@ export function sendStatus(request, response) {
 }
 
 export async function msgChatGpt(request, response) {
-    const openai = new OpenAI({
-        apiKey: process.env.DETECTIVE_KEY,
-    });
-
     try {
+        const openai = new OpenAI({
+            apiKey: process.env.DETECTIVE_KEY,
+        });
         const { content, case_id, suspect } = request.body
 
         const curCase = await caseModel.findOne({_id : case_id})
@@ -85,10 +84,9 @@ export async function msgChatGpt(request, response) {
 }
 
 export async function getConversation(request, response){
-    let { suspect_id, page_no } = request.body
-    let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0}).sort({_id : 1}).skip((page_no-1) * 10).limit(10);
-
     try{
+        let { suspect_id, page_no } = request.body
+        let conversations = await messageModel.find({suspectId : suspect_id},{__v : 0});
         return response.json({ok : true , data : conversations})
     }catch(error){
         console.log(error,'error')
@@ -97,36 +95,41 @@ export async function getConversation(request, response){
 }
 
 async function generateSummary(recentConversations,interrogation,openai){
-    const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-            {
-                role : 'system',
-                content : 'You have to summarize the interrogation conversation and compress as much possible without losing key details.'
-            },
-            {
-                role : 'user',
-                content : `previous conversations summary for context : ${interrogation.summary}\n
-                interrogation conversation : ${JSON.stringify(recentConversations)}`
-            }
-        ]
-    });
-
-    const reply = completion.choices[0].message.content;
-
-    const newSummary = interrogation.summary ? (interrogation.summary+'\n'+reply) : reply
-
-    await interrogationModel.updateOne({_id : interrogation._id},{$set : {summary : newSummary},$inc : {lastSummaryCount : 10}})
-
-    return newSummary
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role : 'system',
+                    content : 'You have to summarize the interrogation conversation and compress as much possible without losing key details.'
+                },
+                {
+                    role : 'user',
+                    content : `previous conversations summary for context : ${interrogation.summary}\n
+                    interrogation conversation : ${JSON.stringify(recentConversations)}`
+                }
+            ]
+        });
+    
+        const reply = completion.choices[0].message.content;
+    
+        const newSummary = interrogation.summary ? (interrogation.summary+'\n'+reply) : reply
+    
+        await interrogationModel.updateOne({_id : interrogation._id},{$set : {summary : newSummary},$inc : {lastSummaryCount : 10}})
+    
+        return newSummary
+    }catch (error) {
+        console.log(error,'error')
+        return response.status(500).json({ ok: false, error: error })
+    }
 }
 
 export async function generateCase(request, response) {
-    const openai = new OpenAI({
-        apiKey: process.env.DETECTIVE_KEY,
-    });
-
     try{
+        const openai = new OpenAI({
+            apiKey: process.env.DETECTIVE_KEY,
+        });
+
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
