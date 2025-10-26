@@ -90,7 +90,11 @@ export async function msgChatGpt(request, response) {
 export async function getConversation(request, response){
     try{
         let { suspect_id, page_no } = request.body
-        let conversations = await messageModel.find({userId : request.userId, suspectId : suspect_id},{__v : 0});
+        let conversations = await messageModel.find({userId : request.userId, suspectId : suspect_id},{__v : 0})
+        .sort({_id : -1})
+        .skip((page_no-1)*20)
+        .limit(20)
+        conversations.reverse();
         return response.json({ok : true , data : conversations})
     }catch(error){
         console.log(error,'error')
