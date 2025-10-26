@@ -3,9 +3,9 @@ import cors from "cors"
 import dotenv from "dotenv"
 import gameRouter from "./routes/game.routes.js"
 import authRouter from "./routes/auth.routes.js"
+import cookieParser from "cookie-parser";
 import { connectMongo } from "./mongo.js"
 import { authMiddleware } from "./middleware.js"
-import cookieParser from "cookie-parser";
 
 dotenv.config();
 
