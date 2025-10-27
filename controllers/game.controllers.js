@@ -76,11 +76,13 @@ export async function msgChatGpt(request, response) {
         
         const reply = completion.choices[0].message.content;
 
-        await messageModel.insertMany([
+        const result = await messageModel.insertMany([
             {caseId : case_id, role:'user', content : content, userId : request.userId, suspectId : suspect._id, interrogationId : interrogation._id},
             {caseId: case_id, role:'assistant', content : reply, userId : request.userId, suspectId : suspect._id, interrogationId : interrogation._id}
         ])
-        return response.json({ ok: true, data: reply });
+
+        let insertedIds = result.map((obj)=> obj._id.toString())
+        return response.json({ ok: true, data: {reply : reply, insertedIds : insertedIds} });
     } catch (error) {
         console.log(error,'error')
         return response.status(500).json({ ok: false, error: error })
@@ -90,7 +92,7 @@ export async function msgChatGpt(request, response) {
 export async function getConversation(request, response){
     try{
         let { suspect_id, page_no } = request.body
-        let conversations = await messageModel.find({userId : request.userId, suspectId : suspect_id},{__v : 0})
+        let conversations = await messageModel.find({userId : request.userId, suspectId : suspect_id},{content : 1, role : 1})
         .sort({_id : -1})
         .skip((page_no-1)*20)
         .limit(20)
