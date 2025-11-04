@@ -5,7 +5,7 @@ import gameRouter from "./routes/game.routes.js"
 import authRouter from "./routes/auth.routes.js"
 import cookieParser from "cookie-parser";
 import connectMongo  from "./mongo.js"
-import { authMiddleware } from "./middleware.js"
+import authMiddleware from "./middleware.js"
 
 dotenv.config();
 

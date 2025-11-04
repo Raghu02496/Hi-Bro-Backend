@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export async function authMiddleware(request, response, next){
+export default async function authMiddleware(request, response, next){
     const token = request.cookies.token;
 
     if (!token) return response.status(401).json({ ok : false, data : 'No token provided' });
