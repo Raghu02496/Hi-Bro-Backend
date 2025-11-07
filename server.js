@@ -6,14 +6,11 @@ import authRouter from "./routes/auth.routes.js"
 import cookieParser from "cookie-parser";
 import connectMongo  from "./mongo.js"
 import authMiddleware from "./middleware.js"
-import os from "os"
-
-const cpuLen = os.cpus().length;
-console.log(cpuLen,'.....')
 
 dotenv.config();
 
 const app = express();
+
 app.use(
     express.json(),
     cookieParser(),
