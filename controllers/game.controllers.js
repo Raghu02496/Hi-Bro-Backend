@@ -188,3 +188,14 @@ export async function getCaseById(request,response) {
         return response.status(500).json({ ok: false, error: error })
     }
 }
+
+export async function listCases(request, response){
+    try{
+        const { page_no } = request.body
+        const cases = await caseModel.find({},{title : 1})
+        return response.json({ok : true , data : cases})
+    }catch(error){
+        console.log(error,'error')
+        return response.status(500).json({ ok: false, error: error })
+    }
+}
