@@ -32,7 +32,7 @@ export async function msgChatGpt(request, response) {
         let totalCount = await messageModel.countDocuments({userId : request.userId, suspectId : suspect._id })
 
         if(totalCount - interrogation.lastSummaryCount >= 10 ){
-            interrogation.summary = await generateSummary(recentConversations,interrogation,openai)
+            interrogation.summary = await generateSummary(recentConversations,interrogation)
             recentConversations = []
         }
 
@@ -104,8 +104,13 @@ export async function getConversation(request, response){
     }
 }
 
-async function generateSummary(recentConversations,interrogation,openai){
+async function generateSummary(recentConversations, interrogation){
     try {
+
+        const openai = new OpenAI({
+            apiKey: process.env.DETECTIVE_KEY,
+        });
+
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
