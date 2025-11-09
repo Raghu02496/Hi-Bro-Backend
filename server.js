@@ -28,10 +28,10 @@ app.use(
 const server = http.createServer(app)
 const io = new Server(server,{ cors: { origin: process.env.ORIGIN, credentials: true } })
 
+await connectMongo()
+
 io.use(socketMiddleware);
 socketSetup(io);
-
-await connectMongo()
 
 server.listen(process.env.PORT, () => {
     console.log(`Server Listening on PORT: ${process.env.PORT}`);
