@@ -209,6 +209,7 @@ export async function listUsers(request, response){
     try{
         const { page_no } = request.body
         let users = await userModel.find({},{password : 0})
+        users = users.filter((user)=> user._id.toString() != request.userId)
         users = users.map(user =>{
             user._id = user._id.toString()
             return user
