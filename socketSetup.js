@@ -10,7 +10,7 @@ export default function (io) {
             const recipent = onlineMap.get(data.toUserId)
 
             if(recipent){
-                io.to(recipent).emit('sendMessage', data.message)
+                io.to(recipent).emit('sendMessage', {fromUserId : socket.userId, message : data.message})
             }
         })
 
