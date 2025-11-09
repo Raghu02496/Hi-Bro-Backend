@@ -1,5 +1,5 @@
 import express from "express"
-import { msgChatGpt, getConversation, generateCase, getCaseById, listCases, sendStatus } from "../controllers/game.controllers.js"
+import { msgChatGpt, getConversation, generateCase, getCaseById, listCases, listUsers, sendStatus } from "../controllers/game.controllers.js"
 
 export const gameRouter = express.Router();
 
@@ -9,5 +9,6 @@ gameRouter.post('/getConversation',getConversation)
 gameRouter.post('/generateCase',generateCase)
 gameRouter.post('/getCaseById',getCaseById)
 gameRouter.post('/listCases',listCases)
+gameRouter.post('/listUsers',listUsers)
 
 export default gameRouter

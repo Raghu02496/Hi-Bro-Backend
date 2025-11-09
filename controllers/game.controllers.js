@@ -1,5 +1,5 @@
 import { OpenAI } from "openai"
-import { messageModel, caseModel, interrogationModel } from "../models/models.js";
+import { messageModel, caseModel, interrogationModel, userModel } from "../models/models.js";
 import mongoose from "mongoose";
 
 export function sendStatus(request, response) {
@@ -199,6 +199,21 @@ export async function listCases(request, response){
         const { page_no } = request.body
         const cases = await caseModel.find({},{title : 1})
         return response.json({ok : true , data : cases})
+    }catch(error){
+        console.log(error,'error')
+        return response.status(500).json({ ok: false, error: error })
+    }
+}
+
+export async function listUsers(request, response){
+    try{
+        const { page_no } = request.body
+        let users = await userModel.find({},{password : 0})
+        users = users.map(user =>{
+            user._id = user._id.toString()
+            return user
+        })
+        return response.json({ok : true , data : users})
     }catch(error){
         console.log(error,'error')
         return response.status(500).json({ ok: false, error: error })

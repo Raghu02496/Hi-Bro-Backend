@@ -6,6 +6,10 @@ import authRouter from "./routes/auth.routes.js"
 import cookieParser from "cookie-parser";
 import connectMongo  from "./mongo.js"
 import authMiddleware from "./middleware.js"
+import http from "http"
+import { Server } from "socket.io"
+import socketMiddleware from "./socket.middleware.js"
+import socketSetup from "./socketSetup.js"
 
 dotenv.config();
 
@@ -20,9 +24,15 @@ app.use(
     })
 );
 
+const server = http.createServer(app)
+const io = new Server(server,{ cors: { origin: process.env.ORIGIN, credentials: true } })
+
+io.use(socketMiddleware);
+socketSetup(io);
+
 await connectMongo()
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log(`Server Listening on PORT: ${process.env.PORT}`);
 });
 
