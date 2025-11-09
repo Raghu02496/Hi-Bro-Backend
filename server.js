@@ -5,11 +5,12 @@ import gameRouter from "./routes/game.routes.js"
 import authRouter from "./routes/auth.routes.js"
 import cookieParser from "cookie-parser";
 import connectMongo  from "./mongo.js"
-import authMiddleware from "./middleware.js"
+import authMiddleware from "./middlewares/api.middleware.js"
 import http from "http"
 import { Server } from "socket.io"
-import socketMiddleware from "./socket.middleware.js"
+import socketMiddleware from "./middlewares/socket.middleware.js"
 import socketSetup from "./socketSetup.js"
+import chatRouter from "./routes/chat.routes.js"
 
 dotenv.config();
 
@@ -36,5 +37,5 @@ server.listen(process.env.PORT, () => {
     console.log(`Server Listening on PORT: ${process.env.PORT}`);
 });
 
-app.use('/protected',authMiddleware,gameRouter);
+app.use('/protected', authMiddleware, gameRouter, chatRouter);
 app.use('/public',authRouter)
