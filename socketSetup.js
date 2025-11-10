@@ -3,7 +3,7 @@ export default function (io) {
     const onlineMap = new Map()
 
     io.on('connection', (socket) => {
-        console.log("Client connected", socket.userId)
+        console.log("Client connected", socket.id)
         onlineMap.set(socket.userId, socket.id)
 
         socket.on('sendMessage', (data) => {
