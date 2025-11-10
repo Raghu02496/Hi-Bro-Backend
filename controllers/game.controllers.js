@@ -3,7 +3,7 @@ import { messageModel, caseModel, interrogationModel } from "../models/models.js
 import mongoose from "mongoose";
 
 export function sendStatus(request, response) {
-    return response.json({ ok: true, data: "Everything ok" })
+    return response.json({ ok: true, data: "Token verified" })
 }
 
 export async function msgChatGpt(request, response) {
